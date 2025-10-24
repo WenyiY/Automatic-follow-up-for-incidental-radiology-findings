@@ -13,6 +13,7 @@ follow-ups that can harm patients.
 - **Alert System:** Notify clinicians/admin when follow-up is missing.
 
 ## Quick Start
+
 ```bash
 git clone https://github.com/<your-username>/auto-followup.git
 cd auto-followup

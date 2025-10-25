@@ -2,11 +2,16 @@
 
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, Trainer, TrainingArguments, IntervalStrategy
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, precision_recall_fscore_support
+from sklearn.metrics import accuracy_score, precision_recall_fscore_support, classification_report
 import torch
 import pandas as pd
 from datasets import Dataset
 import numpy as np
+from scipy.special import softmax
+from sklearn.metrics import confusion_matrix, classification_report
+import seaborn as sns
+import matplotlib.pyplot as plt
+
 
 # Load data
 df = pd.read_csv("data/500_labeled_nodules.csv")
@@ -62,45 +67,28 @@ metrics = trainer.evaluate()
 print(metrics)
 
 
-
-# --- Prediction Step ---
-# Use the trainer to get predictions on the test data
+# --- Prediction & Evaluation Combined ---
 predictions_output = trainer.predict(test_dataset)
-
-# Extract the predicted class (the index of the maximum logit)
 predictions = np.argmax(predictions_output.predictions, axis=1)
-
-# Extract the true labels
 true_labels = predictions_output.label_ids
+probs = softmax(predictions_output.predictions, axis=1)[:, 1]
 
-# --- Evaluation Step ---
+# --- Adjust threshold for better recall (tune this manually) ---
+threshold = 0.4
+predictions_adj = (probs >= threshold).astype(int)
 
-# Calculate Accuracy
-accuracy = accuracy_score(true_labels, predictions)
+# --- Compute basic metrics ---
+accuracy = accuracy_score(true_labels, predictions_adj)
+precision, recall, f1, _ = precision_recall_fscore_support(true_labels, predictions_adj, average='macro')
+class_metrics = precision_recall_fscore_support(true_labels, predictions_adj, average=None, labels=[0, 1])
 
-# Calculate Precision, Recall, and F1-score
-# Use the 'macro' average to treat both classes equally
-precision, recall, f1, _ = precision_recall_fscore_support(
-    true_labels, 
-    predictions, 
-    average='macro' # Other common options: 'binary' (for just class 1), 'weighted'
-)
-
-# Calculate metrics for each individual class (for detailed analysis)
-# Setting 'average=None' returns arrays for each class
-class_metrics = precision_recall_fscore_support(
-    true_labels, 
-    predictions, 
-    average=None,
-    labels=[0, 1] # Ensure order is correct
-)
+# Unpack metrics for both classes
 class_0_precision, class_1_precision = class_metrics[0]
 class_0_recall, class_1_recall = class_metrics[1]
 class_0_f1, class_1_f1 = class_metrics[2]
 class_0_support, class_1_support = class_metrics[3]
 
-
-# Print the results
+# --- Print summary ---
 print("\n--- Model Performance Metrics ---")
 print(f"**Overall Accuracy:** {accuracy:.4f}")
 print("---------------------------------")
@@ -113,3 +101,19 @@ print(f"    Precision: {class_0_precision:.4f}, Recall: {class_0_recall:.4f}, F1
 print("  Class 1 (Positive) Metrics:")
 print(f"    Precision: {class_1_precision:.4f}, Recall: {class_1_recall:.4f}, F1: {class_1_f1:.4f}, Support: {class_1_support}")
 print("---------------------------------\n")
+
+# --- Confusion Matrix ---
+cm = confusion_matrix(true_labels, predictions_adj)
+print("Confusion Matrix:\n", cm)
+
+# Plot confusion matrix
+plt.figure(figsize=(6, 5))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+            xticklabels=['No Follow Up Needed', 'Follow Up Needed'],
+            yticklabels=['No Follow Up', 'Followed Up'])
+plt.xlabel('Predicted Label')
+plt.ylabel('True Label')
+plt.title('Confusion Matrix')
+plt.tight_layout()
+plt.savefig("confusion_matrix.png")
+plt.show()

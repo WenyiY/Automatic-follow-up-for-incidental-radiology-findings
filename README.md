@@ -12,6 +12,7 @@ follow-ups that can harm patients.
 - **Alert System:** Notify clinicians/admin when follow-up is missing.
 
 ## Path
+```
 ├── README.md
 ├── .gitignore
 ├── requirements.txt
@@ -22,13 +23,20 @@ follow-ups that can harm patients.
 │   └── predictions_output.csv      # small sample reports for demo
 │
 ├── src/
-    ├── Findings.py
-    ├── nlp_pipeline.py             # NLP Model trained with bioBert library, first version
-    ├── predict.py                  # Input raw data to predict pulmonary nodules present/absent
-    ├── Model.py                    # NLP Model trained with bioBert library, second version
+│   ├── Findings.py
+│   ├── nlp_pipeline.py             # NLP Model trained with bioBert library, first version
+│   ├── predict.py                  # Input raw data to predict pulmonary nodules present/absent
+│   └── Model.py                    # NLP Model trained with bioBert library, second version
+
 
 
 ## Quick Start
+
+1.  Run the model first:
+```bash
+python src/nlp_pipeline.py
+```
+2. A new folder "models" will be generated, then run the code for prediction:
 
 ```bash
 python src/predict.py

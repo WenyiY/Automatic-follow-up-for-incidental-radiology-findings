@@ -5,6 +5,3 @@ models/
 # Ignore Python cache
 __pycache__/
 *.pyc
-
-# Ignore datasets or large CSVs
-data/*.csv

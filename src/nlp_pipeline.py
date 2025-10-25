@@ -1,3 +1,5 @@
+#------------- NLP Model trained with bioBert library ----------------#
+
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, Trainer, TrainingArguments, IntervalStrategy
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
@@ -7,7 +9,7 @@ from datasets import Dataset
 import numpy as np
 
 # Load data
-df = pd.read_csv("data/examples/500_labeled_nodules.csv")
+df = pd.read_csv("data/500_labeled_nodules.csv")
 df = df[['findings_reduced', 'label_binary']]
 # Splits data into 80% training, 20% testing
 train_df, test_df = train_test_split(df, test_size=0.2, stratify=df['label_binary'], random_state=42)

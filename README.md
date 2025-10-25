@@ -9,13 +9,27 @@ follow-ups that can harm patients.
 ## Components
 - **NLP Extraction:** Detect incidental findings in plain-text reports.
 - **EHR Checker:** Cross-reference EHR data via FHIR API.
-- **Scheduler:** Automate periodic scans.
 - **Alert System:** Notify clinicians/admin when follow-up is missing.
+
+## Path
+├── README.md
+├── .gitignore
+├── requirements.txt
+│
+├── data/
+│   ├── 500_labeled_nodules.csv     # raw radiology reports (de-identified)
+│   ├── findings_nodule.csv         # parsed data
+│   └── predictions_output.csv      # small sample reports for demo
+│
+├── src/
+    ├── Findings.py
+    ├── nlp_pipeline.py             # NLP Model trained with bioBert library, first version
+    ├── predict.py                  # Input raw data to predict pulmonary nodules present/absent
+    ├── Model.py                    # NLP Model trained with bioBert library, second version
+
 
 ## Quick Start
 
 ```bash
-git clone https://github.com/<your-username>/auto-followup.git
-cd auto-followup
-pip install -r requirements.txt
-python src/main.py
+python src/predict.py
+```

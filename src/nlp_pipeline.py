@@ -73,10 +73,10 @@ true_labels = predictions_output.label_ids
 
 # --- Evaluation Step ---
 
-# 1. Calculate Accuracy
+# Calculate Accuracy
 accuracy = accuracy_score(true_labels, predictions)
 
-# 2. Calculate Precision, Recall, and F1-score
+# Calculate Precision, Recall, and F1-score
 # Use the 'macro' average to treat both classes equally
 precision, recall, f1, _ = precision_recall_fscore_support(
     true_labels, 
@@ -84,7 +84,7 @@ precision, recall, f1, _ = precision_recall_fscore_support(
     average='macro' # Other common options: 'binary' (for just class 1), 'weighted'
 )
 
-# 3. Calculate metrics for each individual class (for detailed analysis)
+# Calculate metrics for each individual class (for detailed analysis)
 # Setting 'average=None' returns arrays for each class
 class_metrics = precision_recall_fscore_support(
     true_labels, 
@@ -98,7 +98,7 @@ class_0_f1, class_1_f1 = class_metrics[2]
 class_0_support, class_1_support = class_metrics[3]
 
 
-# 4. Print the results
+# Print the results
 print("\n--- Model Performance Metrics ---")
 print(f"**Overall Accuracy:** {accuracy:.4f}")
 print("---------------------------------")

@@ -66,6 +66,7 @@ trainer.train()
 metrics = trainer.evaluate()
 print(metrics)
 
+# Calculate Precision(TP / (TP + FP)), Recall(TP / (TP + FN)), and F1-score(2 × (Precision × Recall) / (Precision + Recall))
 
 # --- Prediction & Evaluation Combined ---
 predictions_output = trainer.predict(test_dataset)
@@ -102,6 +103,9 @@ print("  Class 1 (Positive) Metrics:")
 print(f"    Precision: {class_1_precision:.4f}, Recall: {class_1_recall:.4f}, F1: {class_1_f1:.4f}, Support: {class_1_support}")
 print("---------------------------------\n")
 
+print(classification_report(true_labels, predictions_adj))
+print("---------------------------------\n")
+
 # --- Confusion Matrix ---
 cm = confusion_matrix(true_labels, predictions_adj)
 print("Confusion Matrix:\n", cm)
@@ -109,11 +113,11 @@ print("Confusion Matrix:\n", cm)
 # Plot confusion matrix
 plt.figure(figsize=(6, 5))
 sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
-            xticklabels=['No Follow Up Needed', 'Follow Up Needed'],
-            yticklabels=['No Follow Up', 'Followed Up'])
+            xticklabels=['Nodules absent', 'Nodules present'],
+            yticklabels=['Nodules absent', 'Nodules present'])
 plt.xlabel('Predicted Label')
 plt.ylabel('True Label')
 plt.title('Confusion Matrix')
 plt.tight_layout()
-plt.savefig("confusion_matrix.png")
+plt.savefig("test/confusion_matrix.png")
 plt.show()

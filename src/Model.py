@@ -83,7 +83,7 @@ class CustomTrainer(Trainer):
 # Main function to execute training
 def main():
     # Load and preprocess data
-    data = pd.read_csv('500_labeled_nodules.csv')
+    data = pd.read_csv('data/examples/500_labeled_nodules.csv')
     data['findings_reduced'] = data['findings_reduced'].apply(preprocess_text)
     data = data.dropna(subset=['findings_reduced', 'label_binary'])
 
@@ -107,19 +107,20 @@ def main():
 
     # Define training arguments
     training_args = TrainingArguments(
-        output_dir='./results',
-        num_train_epochs=5,
-        per_device_train_batch_size=8,
-        per_device_eval_batch_size=8,
-        warmup_steps=100,
-        weight_decay=0.01,
+        output_dir='..\\..\\results',
+        num_train_epochs=4,
+        warmup_steps=20,
+        weight_decay=0.1,
+        per_device_train_batch_size=16,
         logging_dir='./logs',
         logging_steps=10,
-        eval_strategy="epoch",
-        save_strategy="epoch",
+        eval_strategy="steps",
+        eval_steps = 20,
+        save_strategy = "steps",
+        save_steps = 20,
         load_best_model_at_end=True,
-        fp16=True,
-        learning_rate=1e-5,
+        fp16=False,
+        learning_rate=2e-5,
         dataloader_pin_memory=True if torch.cuda.is_available() else False
     )
 

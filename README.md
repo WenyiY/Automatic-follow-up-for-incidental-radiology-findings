@@ -27,7 +27,7 @@ follow-ups that can harm patients.
 │   ├── nlp_pipeline.py             # NLP Model trained with bioBert library, first version
 │   ├── predict.py                  # Input raw data to predict pulmonary nodules present/absent
 │   └── Model.py                    # NLP Model trained with bioBert library, second version
-
+```
 
 
 ## Quick Start
